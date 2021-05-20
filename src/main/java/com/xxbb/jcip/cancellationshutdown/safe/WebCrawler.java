@@ -22,7 +22,7 @@ public abstract class WebCrawler {
         urlsToCrawler.add(startUrl);
     }
 
-    public void start() {
+    public synchronized void start() {
         exec = new TrackingExecutor(Executors.newCachedThreadPool());
         for (URL url : urlsToCrawler) {
             submitCrawlTask(url);
@@ -30,7 +30,7 @@ public abstract class WebCrawler {
         urlsToCrawler.clear();
     }
     
-    public void stop() throws InterruptedException {
+    public synchronized void stop() throws InterruptedException {
         try {
             saveUncrawled(exec.shutdownNow());
             if (exec.awaitTermination(TIMEOUT, UNIT)) {
